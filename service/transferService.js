@@ -5,7 +5,11 @@ const { getUser } = require('./userService');
 function createTransfer({ from, to, amount }) {
   const sender = getUser(from);
   const recipient = getUser(to);
-  if (!sender || !recipient) throw new Error('Usuário remetente ou destinatário não encontrado');
+  if (!sender || !recipient) {
+    const err = new Error('Usuário remetente ou destinatário não encontrado');
+    err.status = 400;
+    throw err;
+  }
   const isFavorecido = sender.favorecidos.includes(to);
   if (!isFavorecido && amount >= 5000) {
     throw new Error('Transferências acima de R$ 5.000,00 só podem ser feitas para favorecidos');
