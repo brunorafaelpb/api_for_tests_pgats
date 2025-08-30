@@ -1,6 +1,6 @@
 const request = require('supertest');
 const sinon = require('sinon');
-const assert = require('assert');
+const { expect } = require('chai');
 
 const app = require('../../app');
 
@@ -14,8 +14,8 @@ describe('Tranfer Controller', () => {
                     to: "Fernanda",
                     amount: 10
                 });
-            assert.equal(response.status,400);
-
+            expect(response.status).to.equal(400);
+            expect(response.body).to.have.property('error', 'Usuário remetente ou destinatário não encontrado');
         });
     });
 
