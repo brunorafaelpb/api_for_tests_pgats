@@ -23,7 +23,7 @@ describe('Tranfer Controller', () => {
         it('USANDO MOCKS: Quando informo remetente e destinatário inexistentes recebo 400', async () => {
             // Mocar apenas a função transfer do Service
             const transferServiceMock = sinon.stub(transferService, 'createTransfer')
-            transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado'));
+            transferServiceMock.throws(new Error('Usuário remetente ou destinatário não  encontrado'));
 
             const response = await request(app)
                 .post('/transfer')
