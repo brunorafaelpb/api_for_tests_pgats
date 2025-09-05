@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 describe('Tranfer API', () => {
     describe('POST /transfer', () => {
-        it.only('Quando informo remetente e destinatário inexistentes recebo 400', async () => {
+        it('Quando informo remetente e destinatário inexistentes recebo 400', async () => {
             // Capturar o token
             const responseLogin = await request('http://localhost:3000')
                 .post('/login')

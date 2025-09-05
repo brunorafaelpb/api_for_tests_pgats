@@ -8,7 +8,7 @@ const transferService = require('../../service/transferService')
 
 describe('Tranfer Controller', () => {
     describe('POST /transfer', () => {
-        it.only('Quando informo remetente e destinatário inexistentes recebo 400', async () => {
+        it('Quando informo remetente e destinatário inexistentes recebo 400', async () => {
             const responseLogin = await request('http://localhost:3000')
                 .post('/login')
                 .send({
@@ -32,11 +32,21 @@ describe('Tranfer Controller', () => {
 
         it('USANDO MOCKS: Quando informo remetente e destinatário inexistentes recebo 400', async () => {
             // Mocar apenas a função transfer do Service
+            const responseLogin = await request('http://localhost:3000')
+                .post('/login')
+                .send({
+                    username: "bruno",
+                    password: "1234"
+                });
+
+            const token = responseLogin.body.token;
+            
             const transferServiceMock = sinon.stub(transferService, 'createTransfer')
             transferServiceMock.throws(new Error('Usuário remetente ou destinatário não encontrado'));
 
             const response = await request(app)
                 .post('/transfer')
+                .set('Authorization', `Bearer ${token}`)
                 .send({ 
                     from: "Bruno",
                     to: "Fernanda",
@@ -49,6 +59,15 @@ describe('Tranfer Controller', () => {
         });
 
         it('USANDO MOCKS: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () => {
+            const responseLogin = await request('http://localhost:3000')
+                .post('/login')
+                .send({
+                    username: "bruno",
+                    password: "1234"
+                });
+
+            const token = responseLogin.body.token;
+            
             const responseEsperado = require('../fixture/responses/quantoInformoValoresValidosEuTenhoSucessoCom201Created.json')
             
             // Mocar apenas a função transfer do Service
@@ -62,6 +81,7 @@ describe('Tranfer Controller', () => {
 
             const response = await request(app)
                 .post('/transfer')
+                .set('Authorization', `Bearer ${token}`)
                 .send({ 
                     from: "bruno",
                     to: "fernanda",
