@@ -9,7 +9,7 @@ const transferService = require('../../service/transferService')
 describe('Tranfer Controller', () => {
     describe('POST /transfer', () => {
         it('Quando informo remetente e destinatário inexistentes recebo 400', async () => {
-            const responseLogin = await request('http://localhost:3000')
+            const responseLogin = await request(app)
                 .post('/login')
                 .send({
                     username: "bruno",
@@ -32,7 +32,7 @@ describe('Tranfer Controller', () => {
 
         it('USANDO MOCKS: Quando informo remetente e destinatário inexistentes recebo 400', async () => {
             // Mocar apenas a função transfer do Service
-            const responseLogin = await request('http://localhost:3000')
+            const responseLogin = await request(app)
                 .post('/login')
                 .send({
                     username: "bruno",
@@ -59,7 +59,7 @@ describe('Tranfer Controller', () => {
         });
 
         it('USANDO MOCKS: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () => {
-            const responseLogin = await request('http://localhost:3000')
+            const responseLogin = await request(app)
                 .post('/login')
                 .send({
                     username: "bruno",
