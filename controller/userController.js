@@ -7,12 +7,15 @@ exports.register = (req, res) => {
     return res.status(400).json({ error: 'Usuário e senha são obrigatórios' });
   }
   try {
-    const user = userService.registerUser({ username, password, favorecidos });
+    const user = userService.registerUser({ username, password, favorecidos, saldo: 10000 });
     res.status(201).json(user);
   } catch (err) {
     res.status(409).json({ error: err.message });
   }
 };
+
+const jwt = require('jsonwebtoken');
+const SECRET = process.env.JWT_SECRET || 'segredo_super_secreto';
 
 exports.login = (req, res) => {
   const { username, password } = req.body;
@@ -21,7 +24,9 @@ exports.login = (req, res) => {
   }
   try {
     const user = userService.loginUser({ username, password });
-    res.status(200).json(user);
+    // Gera o token JWT
+    const token = jwt.sign({ username: user.username }, SECRET, { expiresIn: '1h' });
+    res.status(200).json({ user, token });
   } catch (err) {
     res.status(401).json({ error: err.message });
   }

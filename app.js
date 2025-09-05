@@ -13,9 +13,8 @@ app.post('/register', userController.register);
 app.post('/login', userController.login);
 app.get('/users', userController.getUsers);
 
-// Rotas de transferência
-app.post('/transfer', transferController.createTransfer);
-app.get('/transfers', transferController.getTransfers);
+// Rotas de transferência usando o router
+app.use('/transfer', transferController);
 
 // Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
