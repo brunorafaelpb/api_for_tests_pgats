@@ -8,12 +8,22 @@ const transferService = require('../../service/transferService')
 
 describe('Tranfer Controller', () => {
     describe('POST /transfer', () => {
-        it('Quando informo remetente e destinatário inexistentes recebo 400', async () => {
+        it.only('Quando informo remetente e destinatário inexistentes recebo 400', async () => {
+            const responseLogin = await request('http://localhost:3000')
+                .post('/login')
+                .send({
+                    username: "bruno",
+                    password: "1234"
+                });
+
+            const token = responseLogin.body.token;
+
             const response = await request(app)
                 .post('/transfer')
+                .set('Authorization', `Bearer ${token}`)
                 .send({ 
-                    from: "Bruno",
-                    to: "Fernanda",
+                    from: "bruno",
+                    to: "rafael",
                     amount: 10
                 });
             expect(response.status).to.equal(400);
@@ -39,12 +49,15 @@ describe('Tranfer Controller', () => {
         });
 
         it('USANDO MOCKS: Quando informo valores válidos eu tenho sucesso com 201 CREATED', async () => {
+            const responseEsperado = require('../fixture/responses/quantoInformoValoresValidosEuTenhoSucessoCom201Created.json')
+            
             // Mocar apenas a função transfer do Service
             const transferServiceMock = sinon.stub(transferService, 'createTransfer')
             transferServiceMock.returns({
                 from: 'bruno',
                 to: 'fernanda',
-                amount: 1000
+                amount: 1000,
+                date: new Date().toISOString()
             });
 
             const response = await request(app)
@@ -55,9 +68,10 @@ describe('Tranfer Controller', () => {
                     amount: 1000
                 });
             expect(response.status).to.equal(201);
-            expect(response.body).to.have.property('from', 'bruno');
-            expect(response.body).to.have.property('to', 'fernanda');
-            expect(response.body).to.have.property('amount', 1000);
+
+            delete response.body.date;
+            delete responseEsperado.date;
+            expect(response.body).to.deep.equal(responseEsperado)
 
             sinon.restore();
         });
